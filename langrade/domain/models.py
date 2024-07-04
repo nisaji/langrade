@@ -1,5 +1,5 @@
 from langchain_core.pydantic_v1 import BaseModel, Field
-from ..src.langrade.constants import (
+from langrade.constants import (
     GRADE_REASONING_DESCRIPTION,
     BINARY_SCORE_DESCRIPTION,
 )

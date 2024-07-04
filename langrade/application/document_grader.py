@@ -1,11 +1,11 @@
 from langchain_core.prompts import ChatPromptTemplate
-from langchain import LLM
+from langchain_core.language_models import BaseLLM as LLM
 from ..domain.models import (
     ComparisonInput,
     GradeDocumentsWithReasoning,
     GradeDocumentsWithoutReasoning,
 )  # noqa: E501
-from ..src.langrade.constants import SYSTEM_PROMPT
+from langrade.constants import SYSTEM_PROMPT
 from typing import Union
 
 
