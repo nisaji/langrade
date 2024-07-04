@@ -14,7 +14,9 @@ class TestDocumentGrader(unittest.TestCase):
             raise ValueError(
                 "OPENAI_API_KEY is not set in the environment variables"
             )  # noqa: E501
-        self.grader_with_reasoning = document_grader(api_key, reasoning=True)
+        self.grader_with_reasoning = document_grader(
+            api_key, reasoning=True
+        )  # noqa: E501
         self.grader_without_reasoning = document_grader(
             api_key, reasoning=False
         )  # noqa: E501

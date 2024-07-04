@@ -39,7 +39,6 @@ class DocumentGrader:
         document: Union[str, ComparisonInput],
         question: Union[str, ComparisonInput],
     ):
-        prompt = self.create_prompt()
 
         if isinstance(document, ComparisonInput):
             document_content = document.get_content()
@@ -51,6 +50,7 @@ class DocumentGrader:
         else:
             question_content = question
 
-        return prompt | self.structured_llm.invoke(
+        result = self.structured_llm.invoke(
             {"document": document_content, "question": question_content}
         )
+        return result["text"]

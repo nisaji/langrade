@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, List
 from langchain_core.pydantic_v1 import BaseModel, Field
 from langrade.constants import (
     GRADE_REASONING_DESCRIPTION,
@@ -56,8 +56,9 @@ class GradeDocumentsWithReasoning(BaseModel, BaseLLMOutputParser):
         default=None, description=BINARY_SCORE_DESCRIPTION
     )
 
-    def parse_result(self, result: str) -> Dict[str, Any]:
-        parts = result.split("\n")
+    def parse_result(self, result: List[str]) -> Dict[str, Any]:
+        text = "\n".join(result)  # リストを文字列に結合
+        parts = text.split("\n")
         self.reasoning = parts[0] if len(parts) > 1 else ""
         self.binary_score = parts[-1].lower() if parts else ""
         return self.dict()
@@ -68,6 +69,7 @@ class GradeDocumentsWithoutReasoning(BaseModel, BaseLLMOutputParser):
         default=None, description=BINARY_SCORE_DESCRIPTION
     )
 
-    def parse_result(self, result: str) -> Dict[str, Any]:
-        self.binary_score = result.strip().lower()
+    def parse_result(self, result: List[str]) -> Dict[str, Any]:
+        text = "\n".join(result)  # リストを文字列に結合
+        self.binary_score = text.strip().lower()
         return self.dict()
