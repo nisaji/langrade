@@ -4,7 +4,7 @@ from langchain_community.document_loaders import WebBaseLoader
 from langchain_community.vectorstores import Chroma
 from langchain_openai import OpenAIEmbeddings
 
-from domain.models import ComparisonInput
+from langrade.domain.models import ComparisonInput
 from .base import DocumentRetriever
 
 
