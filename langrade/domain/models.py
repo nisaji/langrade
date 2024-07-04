@@ -59,16 +59,25 @@ class GradeDocumentsWithReasoning(BaseModel, BaseLLMOutputParser):
 
     @classmethod
     def parse_result(
-        cls, result: Union[str, List[ChatGeneration]]
-    ) -> Dict[str, Any]:  # noqa: E501
+        cls, result: Union[str, List[ChatGeneration], Dict[str, Any]]
+    ) -> Dict[str, Any]:
+        if isinstance(result, dict):
+            return result
         if isinstance(result, list) and isinstance(result[0], ChatGeneration):
             text = result[0].text
         else:
             text = result
-        parts = text.split("\n")
+        parts = text.lower().split("binary score:")
+        reasoning = parts[0].strip() if len(parts) > 1 else ""
+        binary_score = parts[-1].strip() if parts else ""
+        binary_score = (
+            "yes"
+            if "yes" in binary_score
+            else "no" if "no" in binary_score else ""  # noqa: E501
+        )
         return {
-            "reasoning": parts[0] if len(parts) > 1 else "",
-            "binary_score": parts[-1].lower() if parts else "",
+            "reasoning": reasoning,
+            "binary_score": binary_score,
         }
 
 
@@ -79,10 +88,18 @@ class GradeDocumentsWithoutReasoning(BaseModel, BaseLLMOutputParser):
 
     @classmethod
     def parse_result(
-        cls, result: Union[str, List[ChatGeneration]]
-    ) -> Dict[str, Any]:  # noqa: E501
+        cls, result: Union[str, List[ChatGeneration], Dict[str, Any]]
+    ) -> Dict[str, Any]:
+        if isinstance(result, dict):
+            return result
         if isinstance(result, list) and isinstance(result[0], ChatGeneration):
             text = result[0].text
         else:
             text = result
-        return {"binary_score": text.strip().lower()}
+        binary_score = text.lower().strip()
+        binary_score = (
+            "yes"
+            if "yes" in binary_score
+            else "no" if "no" in binary_score else ""  # noqa: E501
+        )
+        return {"binary_score": binary_score}

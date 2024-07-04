@@ -29,7 +29,7 @@ class DocumentGrader:
                 ("system", SYSTEM_PROMPT),
                 (
                     "human",
-                    "Retrieved document: \n\n {document} \n\n User question: \n\n {question}",  # noqa: E501
+                    "Retrieved document: \n\n {document} \n\n User question: \n\n {question}\n\nPlease provide a binary score (yes/no) for relevance, and if applicable, reasoning.",  # noqa: E501
                 ),
             ]
         )
@@ -52,9 +52,11 @@ class DocumentGrader:
         result = self.structured_llm.invoke(
             {"document": document_content, "question": question_content}
         )
-        parsed_result = self.structured_llm.output_parser.parse_result(
-            result["text"]
-        )  # noqa: E501
+
+        if isinstance(result, dict) and "text" in result:
+            result = result["text"]
+
+        parsed_result = self.structured_llm.output_parser.parse_result(result)
         return (
             GradeDocumentsWithReasoning(**parsed_result)
             if self.reasoning
