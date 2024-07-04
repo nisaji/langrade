@@ -13,6 +13,9 @@ langchain-openai = "^0.1.14"
 pymongo = "^4.8.0"
 langchain-core = "^0.2.11"
 python-dotenv = "^1.0.1"
+openpyxl = "^3.1.5"
+pypdf2 = "^3.0.1"
+python-docx = "^1.1.2"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.5.0"
@@ -32,3 +35,10 @@ ignore = ["E501", "W503"]
 
 [tool.isort]
 profile = "black"
+
+[tool.mypy]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["docx.*", "openpyxl.*"]
+ignore_missing_imports = true
