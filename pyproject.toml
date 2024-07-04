@@ -6,7 +6,7 @@ authors = ["nisaji <nisaji27@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.9"
 langchain = "^0.2.6"
 langchain-community = "^0.2.6"
 langchain-openai = "^0.1.14"
@@ -17,7 +17,8 @@ openpyxl = "^3.1.5"
 pypdf2 = "^3.0.1"
 python-docx = "^1.1.2"
 beautifulsoup4 = "^4.12.3"
-chromadb = "^0.5.3"
+numpy = "^1.22.5"
+chromadb = "^0.5.3,<0.6.0"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.5.0"
