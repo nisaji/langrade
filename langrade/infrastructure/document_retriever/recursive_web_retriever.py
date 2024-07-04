@@ -6,9 +6,10 @@ from .base import DocumentRetriever
 
 
 class RecursiveWebDocumentRetriever(DocumentRetriever):
-    def __init__(self, origin: str, pages: int):
+    def __init__(self, origin: str, pages: int, api_key: str):
         self.origin = origin
         self.pages = pages
+        self.api_key = api_key
         self.vectorstore = self._create_vectorstore()
 
     def _load_documents(self):

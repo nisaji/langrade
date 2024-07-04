@@ -9,8 +9,9 @@ from .base import DocumentRetriever
 
 
 class WebDocumentRetriever(DocumentRetriever):
-    def __init__(self, urls: List[str]):
+    def __init__(self, urls: List[str], api_key: str):
         self.urls = urls
+        self.api_key = api_key
         self.vectorstore = self._create_vectorstore()
 
     def _load_documents(self):

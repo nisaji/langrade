@@ -7,12 +7,18 @@ from .base import DocumentRetriever
 
 class DocumentDBRetriever(DocumentRetriever):
     def __init__(
-        self, uri: str, db_name: str, collection_name: str, num_docs: int
-    ):  # noqa: E501
+        self,
+        uri: str,
+        db_name: str,
+        collection_name: str,
+        num_docs: int,
+        api_key: str,  # noqa: E501
+    ):
         self.uri = uri
         self.db_name = db_name
         self.collection_name = collection_name
         self.num_docs = num_docs
+        self.api_key = api_key
         self.vectorstore = self._create_vectorstore()
 
     def _load_documents(self):
