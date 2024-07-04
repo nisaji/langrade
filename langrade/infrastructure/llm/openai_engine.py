@@ -1,5 +1,7 @@
-from .base import LLMEngine
+from langchain.chains import LLMChain
+from langchain.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
+from .base import LLMEngine
 
 
 class OpenAIEngine(LLMEngine):
@@ -8,3 +10,12 @@ class OpenAIEngine(LLMEngine):
 
     def generate(self, prompt: str) -> str:
         return self.llm.predict(prompt)
+
+    def with_structured_output(self, output_schema):
+        prompt = PromptTemplate(
+            input_variables=["document", "question"],
+            template="Document: {document}\n\nQuestion: {question}\n\nAnswer:",
+        )
+        return LLMChain(
+            llm=self.llm, prompt=prompt, output_parser=output_schema
+        )  # noqa: E501
