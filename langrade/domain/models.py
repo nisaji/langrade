@@ -5,6 +5,7 @@ from langrade.constants import (
 )
 from abc import ABC, abstractmethod
 from langchain_community.document_loaders import WebBaseLoader
+from langchain.schema import BaseLLMOutputParser
 
 
 class ComparisonInput(ABC):
@@ -45,14 +46,20 @@ class URLInput(ComparisonInput):
             return ""
 
 
-class GradeDocumentsWithReasoning(BaseModel):
-    """Binary score and reasoning for relevance check on retrieved documents."""  # noqa: E501
-
+class GradeDocumentsWithReasoning(BaseModel, BaseLLMOutputParser):
     reasoning: str = Field(description=GRADE_REASONING_DESCRIPTION)
     binary_score: str = Field(description=BINARY_SCORE_DESCRIPTION)
 
+    def parse(self, text: str):
+        # ここでLLMの出力をパースするロジックを実装
+        # 例: reasoning と binary_score を抽出
+        pass
 
-class GradeDocumentsWithoutReasoning(BaseModel):
-    """Binary score for relevance check on retrieved documents."""
 
+class GradeDocumentsWithoutReasoning(BaseModel, BaseLLMOutputParser):
     binary_score: str = Field(description=BINARY_SCORE_DESCRIPTION)
+
+    def parse(self, text: str):
+        # ここでLLMの出力をパースするロジックを実装
+        # 例: binary_score を抽出
+        pass
