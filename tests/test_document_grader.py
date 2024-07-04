@@ -1,5 +1,5 @@
-import os
 import unittest
+import os
 from dotenv import load_dotenv
 from langrade import document_grader
 from langrade.domain.models import TextInput, DocumentInput, URLInput
@@ -14,9 +14,7 @@ class TestDocumentGrader(unittest.TestCase):
             raise ValueError(
                 "OPENAI_API_KEY is not set in the environment variables"
             )  # noqa: E501
-        self.grader_with_reasoning = document_grader(
-            api_key, reasoning=True
-        )  # noqa: E501
+        self.grader_with_reasoning = document_grader(api_key, reasoning=True)
         self.grader_without_reasoning = document_grader(
             api_key, reasoning=False
         )  # noqa: E501
@@ -42,6 +40,7 @@ class TestDocumentGrader(unittest.TestCase):
         question = TextInput("What is AI?")
         result = self.grader_with_reasoning.grade_document(document, question)
         self.assertIn(result.binary_score, ["yes", "no"])
+        self.assertIsNotNone(result.reasoning)
 
     def test_grade_document_with_document_input(self):
         document = DocumentInput(
@@ -50,9 +49,15 @@ class TestDocumentGrader(unittest.TestCase):
         question = "What is AI?"
         result = self.grader_with_reasoning.grade_document(document, question)
         self.assertIn(result.binary_score, ["yes", "no"])
+        self.assertIsNotNone(result.reasoning)
 
     def test_grade_document_with_url_input(self):
         document = URLInput("https://example.com/ai-article")
         question = "What is AI?"
         result = self.grader_with_reasoning.grade_document(document, question)
         self.assertIn(result.binary_score, ["yes", "no"])
+        self.assertIsNotNone(result.reasoning)
+
+
+if __name__ == "__main__":
+    unittest.main()

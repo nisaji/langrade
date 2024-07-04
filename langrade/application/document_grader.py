@@ -39,7 +39,6 @@ class DocumentGrader:
         document: Union[str, ComparisonInput],
         question: Union[str, ComparisonInput],
     ):
-
         if isinstance(document, ComparisonInput):
             document_content = document.get_content()
         else:
@@ -53,4 +52,11 @@ class DocumentGrader:
         result = self.structured_llm.invoke(
             {"document": document_content, "question": question_content}
         )
-        return result["text"]
+        parsed_result = self.structured_llm.output_parser.parse_result(
+            result["text"]
+        )  # noqa: E501
+        return (
+            GradeDocumentsWithReasoning(**parsed_result)
+            if self.reasoning
+            else GradeDocumentsWithoutReasoning(**parsed_result)
+        )
