@@ -1,5 +1,4 @@
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.language_models import BaseLLM as LLM
 from ..domain.models import (
     ComparisonInput,
     GradeDocumentsWithReasoning,
@@ -7,10 +6,11 @@ from ..domain.models import (
 )  # noqa: E501
 from langrade.constants import SYSTEM_PROMPT
 from typing import Union
+from langrade.infrastructure.llm.base import LLMEngine
 
 
 class DocumentGrader:
-    def __init__(self, llm: LLM, reasoning: bool):
+    def __init__(self, llm: LLMEngine, reasoning: bool):
         self.llm = llm
         self.reasoning = reasoning
         self.structured_llm = self._create_structured_llm()

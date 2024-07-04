@@ -1,3 +1,4 @@
+from typing import Any, Dict
 from langchain_core.pydantic_v1 import BaseModel, Field
 from langrade.constants import (
     GRADE_REASONING_DESCRIPTION,
@@ -6,6 +7,7 @@ from langrade.constants import (
 from abc import ABC, abstractmethod
 from langchain_community.document_loaders import WebBaseLoader
 from langchain.schema import BaseLLMOutputParser
+from typing import Optional
 
 
 class ComparisonInput(ABC):
@@ -47,19 +49,25 @@ class URLInput(ComparisonInput):
 
 
 class GradeDocumentsWithReasoning(BaseModel, BaseLLMOutputParser):
-    reasoning: str = Field(description=GRADE_REASONING_DESCRIPTION)
-    binary_score: str = Field(description=BINARY_SCORE_DESCRIPTION)
+    reasoning: Optional[str] = Field(
+        default=None, description=GRADE_REASONING_DESCRIPTION
+    )
+    binary_score: Optional[str] = Field(
+        default=None, description=BINARY_SCORE_DESCRIPTION
+    )
 
-    def parse(self, text: str):
-        # ここでLLMの出力をパースするロジックを実装
-        # 例: reasoning と binary_score を抽出
-        pass
+    def parse_result(self, result: str) -> Dict[str, Any]:
+        parts = result.split("\n")
+        self.reasoning = parts[0] if len(parts) > 1 else ""
+        self.binary_score = parts[-1].lower() if parts else ""
+        return self.dict()
 
 
 class GradeDocumentsWithoutReasoning(BaseModel, BaseLLMOutputParser):
-    binary_score: str = Field(description=BINARY_SCORE_DESCRIPTION)
+    binary_score: Optional[str] = Field(
+        default=None, description=BINARY_SCORE_DESCRIPTION
+    )
 
-    def parse(self, text: str):
-        # ここでLLMの出力をパースするロジックを実装
-        # 例: binary_score を抽出
-        pass
+    def parse_result(self, result: str) -> Dict[str, Any]:
+        self.binary_score = result.strip().lower()
+        return self.dict()
