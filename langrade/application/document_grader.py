@@ -1,16 +1,16 @@
 from langchain_core.prompts import ChatPromptTemplate
-from langchain import LLM
 from ..domain.models import (
     ComparisonInput,
     GradeDocumentsWithReasoning,
     GradeDocumentsWithoutReasoning,
 )  # noqa: E501
-from ..src.langrade.constants import SYSTEM_PROMPT
+from langrade.constants import SYSTEM_PROMPT
 from typing import Union
+from langrade.infrastructure.llm.base import LLMEngine
 
 
 class DocumentGrader:
-    def __init__(self, llm: LLM, reasoning: bool):
+    def __init__(self, llm: LLMEngine, reasoning: bool):
         self.llm = llm
         self.reasoning = reasoning
         self.structured_llm = self._create_structured_llm()
@@ -29,7 +29,7 @@ class DocumentGrader:
                 ("system", SYSTEM_PROMPT),
                 (
                     "human",
-                    "Retrieved document: \n\n {document} \n\n User question: \n\n {question}",  # noqa: E501
+                    "Retrieved document: \n\n {document} \n\n User question: \n\n {question}\n\nPlease provide a binary score (yes/no) for relevance, and if applicable, reasoning.",  # noqa: E501
                 ),
             ]
         )
@@ -39,8 +39,6 @@ class DocumentGrader:
         document: Union[str, ComparisonInput],
         question: Union[str, ComparisonInput],
     ):
-        prompt = self.create_prompt()
-
         if isinstance(document, ComparisonInput):
             document_content = document.get_content()
         else:
@@ -51,6 +49,16 @@ class DocumentGrader:
         else:
             question_content = question
 
-        return prompt | self.structured_llm.invoke(
+        result = self.structured_llm.invoke(
             {"document": document_content, "question": question_content}
+        )
+
+        if isinstance(result, dict) and "text" in result:
+            result = result["text"]
+
+        parsed_result = self.structured_llm.output_parser.parse_result(result)
+        return (
+            GradeDocumentsWithReasoning(**parsed_result)
+            if self.reasoning
+            else GradeDocumentsWithoutReasoning(**parsed_result)
         )

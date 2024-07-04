@@ -4,13 +4,14 @@ from langchain_community.document_loaders import WebBaseLoader
 from langchain_community.vectorstores import Chroma
 from langchain_openai import OpenAIEmbeddings
 
-from domain.models import ComparisonInput
+from langrade.domain.models import ComparisonInput
 from .base import DocumentRetriever
 
 
 class WebDocumentRetriever(DocumentRetriever):
-    def __init__(self, urls: List[str]):
+    def __init__(self, urls: List[str], api_key: str):
         self.urls = urls
+        self.api_key = api_key
         self.vectorstore = self._create_vectorstore()
 
     def _load_documents(self):
