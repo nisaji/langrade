@@ -1,10 +1,12 @@
 from langchain_core.prompts import ChatPromptTemplate
 from langchain import LLM
 from ..domain.models import (
+    ComparisonInput,
     GradeDocumentsWithReasoning,
     GradeDocumentsWithoutReasoning,
 )  # noqa: E501
-from ..constants import SYSTEM_PROMPT
+from ..src.langrade.constants import SYSTEM_PROMPT
+from typing import Union
 
 
 class DocumentGrader:
@@ -32,8 +34,23 @@ class DocumentGrader:
             ]
         )
 
-    def grade_document(self, document: str, question: str):
+    def grade_document(
+        self,
+        document: Union[str, ComparisonInput],
+        question: Union[str, ComparisonInput],
+    ):
         prompt = self.create_prompt()
+
+        if isinstance(document, ComparisonInput):
+            document_content = document.get_content()
+        else:
+            document_content = document
+
+        if isinstance(question, ComparisonInput):
+            question_content = question.get_content()
+        else:
+            question_content = question
+
         return prompt | self.structured_llm.invoke(
-            {"document": document, "question": question}
+            {"document": document_content, "question": question_content}
         )

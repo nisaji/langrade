@@ -1,22 +1,56 @@
+import os
 import unittest
+from dotenv import load_dotenv
 from langrade import document_grader
+from langrade.domain.models import TextInput, DocumentInput, URLInput
+
+load_dotenv()
 
 
 class TestDocumentGrader(unittest.TestCase):
+    def setUp(self):
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            raise ValueError(
+                "OPENAI_API_KEY is not set in the environment variables"
+            )  # noqa: E501
+        self.grader_with_reasoning = document_grader(api_key, reasoning=True)
+        self.grader_without_reasoning = document_grader(
+            api_key, reasoning=False
+        )  # noqa: E501
+
     def test_grade_document_with_reasoning(self):
-        grader = document_grader(reasoning=True)
         document = "This is a test document about AI."
         question = "What is AI?"
-        result = grader.grade_document(document, question)
+        result = self.grader_with_reasoning.grade_document(document, question)
         self.assertIn(result.binary_score, ["yes", "no"])
+        self.assertIsNotNone(result.reasoning)
 
     def test_grade_document_without_reasoning(self):
-        grader = document_grader(reasoning=False)
         document = "This is a test document about AI."
         question = "What is AI?"
-        result = grader.grade_document(document, question)
+        result = self.grader_without_reasoning.grade_document(
+            document, question
+        )  # noqa: E501
+        self.assertIn(result.binary_score, ["yes", "no"])
+        self.assertFalse(hasattr(result, "reasoning"))
+
+    def test_grade_document_with_text_input(self):
+        document = TextInput("This is a test document about AI.")
+        question = TextInput("What is AI?")
+        result = self.grader_with_reasoning.grade_document(document, question)
         self.assertIn(result.binary_score, ["yes", "no"])
 
+    def test_grade_document_with_document_input(self):
+        document = DocumentInput(
+            {"content": "This is a test document about AI."}
+        )  # noqa: E501
+        question = "What is AI?"
+        result = self.grader_with_reasoning.grade_document(document, question)
+        self.assertIn(result.binary_score, ["yes", "no"])
 
-if __name__ == "__main__":
-    unittest.main()
+    def test_grade_document_with_url_input(self):
+        document = URLInput("https://example.com/ai-article")
+        question = "What is AI?"
+        result = self.grader_with_reasoning.grade_document(document, question)
+        self.assertIn(result.binary_score, ["yes", "no"])

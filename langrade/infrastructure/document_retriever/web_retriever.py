@@ -1,8 +1,10 @@
-from typing import List
+from typing import List, Union
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_community.vectorstores import Chroma
 from langchain_openai import OpenAIEmbeddings
+
+from domain.models import ComparisonInput
 from .base import DocumentRetriever
 
 
@@ -27,6 +29,13 @@ class WebDocumentRetriever(DocumentRetriever):
             embedding=OpenAIEmbeddings(),
         )
 
-    def get_relevant_documents(self, question: str, top_k: int = 3):
+    def get_relevant_documents(
+        self, question: Union[str, ComparisonInput], top_k: int = 3
+    ):
+        if isinstance(question, ComparisonInput):
+            question_content = question.get_content()
+        else:
+            question_content = question
+
         retriever = self.vectorstore.as_retriever()
-        return retriever.get_relevant_documents(question, k=top_k)
+        return retriever.get_relevant_documents(question_content, k=top_k)
