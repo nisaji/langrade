@@ -57,7 +57,9 @@ class TestDocumentGrader(unittest.TestCase):
         self.assertIsNotNone(result.reasoning)
 
     def test_grade_document_with_url_input(self):
-        document = URLInput("https://example.com/ai-article")
+        document = URLInput(
+            "https://simple.wikipedia.org/wiki/Artificial_intelligence"  # noqa: E501
+        )
         question = "What is AI?"
         result = self.grader_with_reasoning.grade_document(document, question)
         print(f"Result with URL input: {result}")

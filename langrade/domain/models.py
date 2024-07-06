@@ -62,28 +62,26 @@ class GradeDocumentsWithReasoning(BaseModel, BaseLLMOutputParser):
         cls, result: Union[str, List[ChatGeneration], Dict[str, Any]]
     ) -> Dict[str, Any]:
         if isinstance(result, dict):
-            binary_score = result.get("binary_score", "")
-            reasoning = result.get("reasoning", "")
+            return result
+
+        if isinstance(result, list) and isinstance(result[0], ChatGeneration):
+            text = result[0].text
         else:
-            if isinstance(result, list) and isinstance(
-                result[0], ChatGeneration
-            ):  # noqa: E501
-                text = result[0].text
-            else:
-                text = str(result)
+            text = str(result)
 
-            text = text.lower()
-            parts = text.split("binary score:")
-            reasoning = parts[0].strip() if len(parts) > 1 else ""
-            binary_score = parts[-1].strip() if parts else ""
+        reasoning_parts = text.split("Reasoning:", 1)
+        if len(reasoning_parts) > 1:
+            reasoning = reasoning_parts[1].split("Binary Score:", 1)[0].strip()
+        else:
+            reasoning = ""
 
-        binary_score = (
-            "yes"
-            if "yes" in binary_score.lower()
-            else (
-                "no" if "no" in binary_score.lower() else "no"
-            )  # Default to "no" if neither "yes" nor "no" is found
-        )
+        binary_score_parts = text.lower().split("Binary Score:", 1)
+        if len(binary_score_parts) > 1:
+            binary_score = binary_score_parts[1].strip()
+        else:
+            binary_score = ""
+
+        binary_score = "yes" if "yes" in binary_score else "no"
 
         return {
             "reasoning": reasoning,
