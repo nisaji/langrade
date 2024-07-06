@@ -54,10 +54,7 @@ class DocumentGrader:
             prompt.format(document=document_content, question=question_content)
         )
 
-        print(f"Raw LLM Output: {result}")
-
         parsed_result = self.structured_llm.output_parser.parse_result(result)
-        print(f"Parsed Result: {parsed_result}")
 
         if self.reasoning:
             return GradeDocumentsWithReasoning(**parsed_result)

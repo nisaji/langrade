@@ -1,10 +1,10 @@
-import sys
 import pytest
+import os
 
 
 def main():
-    args = sys.argv[1:] if len(sys.argv) > 1 else []
-    pytest.main(args)
+    test_dir = os.path.dirname(os.path.abspath(__file__))
+    pytest.main([test_dir])
 
 
 if __name__ == "__main__":
