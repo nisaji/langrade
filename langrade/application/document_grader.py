@@ -53,6 +53,15 @@ class DocumentGrader:
             {"document": document_content, "question": question_content}
         )
 
+        print(f"API Response: {result}")
+
+        if isinstance(result, dict) and "binary_score" in result:
+            binary_score = result["binary_score"]
+        else:
+            binary_score = ""
+
+            print(f"Binary Score: {binary_score}")
+
         if isinstance(result, dict) and "text" in result:
             result = result["text"]
 
