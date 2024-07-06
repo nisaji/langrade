@@ -10,6 +10,7 @@ load_dotenv()
 class TestDocumentGrader(unittest.TestCase):
     def setUp(self):
         api_key = os.getenv("OPENAI_API_KEY")
+        print(f"API Key: {api_key}")  # 追加：APIキーの確認
         if not api_key:
             raise ValueError(
                 "OPENAI_API_KEY is not set in the environment variables"
@@ -23,6 +24,7 @@ class TestDocumentGrader(unittest.TestCase):
         document = "This is a test document about AI."
         question = "What is AI?"
         result = self.grader_with_reasoning.grade_document(document, question)
+        print(f"Result with reasoning: {result}")  # 追加：結果の確認
         self.assertIn(result.binary_score, ["yes", "no"])
         self.assertIsNotNone(result.reasoning)
 
@@ -32,6 +34,7 @@ class TestDocumentGrader(unittest.TestCase):
         result = self.grader_without_reasoning.grade_document(
             document, question
         )  # noqa: E501
+        print(f"Result without reasoning: {result}")  # 追加：結果の確認
         self.assertIn(result.binary_score, ["yes", "no"])
         self.assertFalse(hasattr(result, "reasoning"))
 
@@ -39,6 +42,7 @@ class TestDocumentGrader(unittest.TestCase):
         document = TextInput("This is a test document about AI.")
         question = TextInput("What is AI?")
         result = self.grader_with_reasoning.grade_document(document, question)
+        print(f"Result with text input: {result}")  # 追加：結果の確認
         self.assertIn(result.binary_score, ["yes", "no"])
         self.assertIsNotNone(result.reasoning)
 
@@ -48,6 +52,7 @@ class TestDocumentGrader(unittest.TestCase):
         )  # noqa: E501
         question = "What is AI?"
         result = self.grader_with_reasoning.grade_document(document, question)
+        print(f"Result with document input: {result}")  # 追加：結果の確認
         self.assertIn(result.binary_score, ["yes", "no"])
         self.assertIsNotNone(result.reasoning)
 
@@ -55,6 +60,7 @@ class TestDocumentGrader(unittest.TestCase):
         document = URLInput("https://example.com/ai-article")
         question = "What is AI?"
         result = self.grader_with_reasoning.grade_document(document, question)
+        print(f"Result with URL input: {result}")  # 追加：結果の確認
         self.assertIn(result.binary_score, ["yes", "no"])
         self.assertIsNotNone(result.reasoning)
 
