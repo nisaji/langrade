@@ -62,21 +62,29 @@ class GradeDocumentsWithReasoning(BaseModel, BaseLLMOutputParser):
         cls, result: Union[str, List[ChatGeneration], Dict[str, Any]]
     ) -> Dict[str, Any]:
         if isinstance(result, dict):
-            return result
-        if isinstance(result, list) and isinstance(result[0], ChatGeneration):
-            text = result[0].text
+            binary_score = result.get("binary_score", "")
+            reasoning = result.get("reasoning", "")
         else:
-            text = result
-        parts = text.lower().split("binary score:")
-        reasoning = parts[0].strip() if len(parts) > 1 else ""
-        binary_score = parts[-1].strip() if parts else ""
+            if isinstance(result, list) and isinstance(
+                result[0], ChatGeneration
+            ):  # noqa: E501
+                text = result[0].text
+            else:
+                text = str(result)
+
+            text = text.lower()
+            parts = text.split("binary score:")
+            reasoning = parts[0].strip() if len(parts) > 1 else ""
+            binary_score = parts[-1].strip() if parts else ""
+
         binary_score = (
             "yes"
-            if "yes" in binary_score
-            else "no" if "no" in binary_score else ""  # noqa: E501
+            if "yes" in binary_score.lower()
+            else (
+                "no" if "no" in binary_score.lower() else "no"
+            )  # Default to "no" if neither "yes" nor "no" is found
         )
-        if binary_score not in ["yes", "no"]:
-            binary_score = "no"
+
         return {
             "reasoning": reasoning,
             "binary_score": binary_score,
@@ -84,7 +92,6 @@ class GradeDocumentsWithReasoning(BaseModel, BaseLLMOutputParser):
 
 
 class GradeDocumentsWithoutReasoning(BaseModel, BaseLLMOutputParser):
-    binary_score: Optional[str] = Field()
     binary_score: Optional[str] = Field(
         default=None, description=BINARY_SCORE_DESCRIPTION
     )
@@ -94,20 +101,22 @@ class GradeDocumentsWithoutReasoning(BaseModel, BaseLLMOutputParser):
         cls, result: Union[str, List[ChatGeneration], Dict[str, Any]]
     ) -> Dict[str, Any]:
         if isinstance(result, dict):
-            return result
-        if isinstance(result, list) and isinstance(result[0], ChatGeneration):
-            text = result[0].text
+            binary_score = result.get("binary_score", "")
         else:
-            text = result
-        parts = text.lower().split("binary score:")
-        reasoning = parts[0].strip() if len(parts) > 1 else ""
-        binary_score = parts[-1].strip() if parts else ""
-        binary_score = (
-            "yes"
-            if "yes" in binary_score
-            else "no" if "no" in binary_score else ""  # noqa: E501
-        )
+            if isinstance(result, list) and isinstance(
+                result[0], ChatGeneration
+            ):  # noqa: E501
+                text = result[0].text
+            else:
+                text = str(result)
+
+            text = text.lower()
+            binary_score = "yes" if "yes" in text else "no"
+
+        # Ensure binary_score is always 'yes' or 'no'
+        if binary_score.lower() not in ["yes", "no"]:
+            binary_score = "no"
+
         return {
-            "reasoning": reasoning,
             "binary_score": binary_score,
         }
