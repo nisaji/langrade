@@ -49,23 +49,28 @@ class DocumentGrader:
         else:
             question_content = question
 
+        print(f"Input Document: {document_content}")
+        print(f"Input Question: {question_content}")
+
         result = self.structured_llm(
             {"document": document_content, "question": question_content}
         )
 
-        print(f"API Response: {result}")
+        print(f"Raw LLM Output: {result}")
 
         if isinstance(result, dict) and "binary_score" in result:
             binary_score = result["binary_score"]
         else:
             binary_score = ""
 
-            print(f"Binary Score: {binary_score}")
+        print(f"Binary Score: {binary_score}")
 
         if isinstance(result, dict) and "text" in result:
             result = result["text"]
 
         parsed_result = self.structured_llm.output_parser.parse_result(result)
+        print(f"Parsed Result: {parsed_result}")
+
         return (
             GradeDocumentsWithReasoning(**parsed_result)
             if self.reasoning
