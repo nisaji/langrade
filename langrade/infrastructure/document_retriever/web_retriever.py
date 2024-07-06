@@ -4,7 +4,7 @@ from langchain_community.document_loaders import WebBaseLoader
 from langchain_community.vectorstores import Chroma
 from langchain_openai import OpenAIEmbeddings
 
-from langrade.domain.models import ComparisonInput
+from langrade.domain.models import KnowledgeInput
 from .base import DocumentRetriever
 
 
@@ -31,9 +31,9 @@ class WebDocumentRetriever(DocumentRetriever):
         )
 
     def get_relevant_documents(
-        self, question: Union[str, ComparisonInput], top_k: int = 3
+        self, question: Union[str, KnowledgeInput], top_k: int = 3
     ):
-        if isinstance(question, ComparisonInput):
+        if isinstance(question, KnowledgeInput):
             question_content = question.get_content()
         else:
             question_content = question

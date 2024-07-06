@@ -11,13 +11,13 @@ from typing import Optional
 from langchain.schema import ChatGeneration
 
 
-class ComparisonInput(ABC):
+class KnowledgeInput(ABC):
     @abstractmethod
     def get_content(self) -> str:
         pass
 
 
-class TextInput(ComparisonInput):
+class TextInput(KnowledgeInput):
     def __init__(self, text: str):
         self.text = text
 
@@ -25,7 +25,7 @@ class TextInput(ComparisonInput):
         return self.text
 
 
-class DocumentInput(ComparisonInput):
+class DocumentInput(KnowledgeInput):
     def __init__(self, document: dict):
         self.document = document
 
@@ -33,7 +33,7 @@ class DocumentInput(ComparisonInput):
         return self.document.get("content", "")
 
 
-class URLInput(ComparisonInput):
+class URLInput(KnowledgeInput):
     def __init__(self, url: str):
         self.url = url
 
@@ -63,18 +63,26 @@ class GradeDocumentsWithReasoning(BaseModel, BaseLLMOutputParser):
     ) -> Dict[str, Any]:
         if isinstance(result, dict):
             return result
+
         if isinstance(result, list) and isinstance(result[0], ChatGeneration):
             text = result[0].text
         else:
-            text = result
-        parts = text.lower().split("binary score:")
-        reasoning = parts[0].strip() if len(parts) > 1 else ""
-        binary_score = parts[-1].strip() if parts else ""
-        binary_score = (
-            "yes"
-            if "yes" in binary_score
-            else "no" if "no" in binary_score else ""  # noqa: E501
-        )
+            text = str(result)
+
+        reasoning_parts = text.split("Reasoning:", 1)
+        if len(reasoning_parts) > 1:
+            reasoning = reasoning_parts[1].split("Binary Score:", 1)[0].strip()
+        else:
+            reasoning = ""
+
+        binary_score_parts = text.lower().split("Binary Score:", 1)
+        if len(binary_score_parts) > 1:
+            binary_score = binary_score_parts[1].strip()
+        else:
+            binary_score = ""
+
+        binary_score = "yes" if "yes" in binary_score else "no"
+
         return {
             "reasoning": reasoning,
             "binary_score": binary_score,
@@ -91,15 +99,22 @@ class GradeDocumentsWithoutReasoning(BaseModel, BaseLLMOutputParser):
         cls, result: Union[str, List[ChatGeneration], Dict[str, Any]]
     ) -> Dict[str, Any]:
         if isinstance(result, dict):
-            return result
-        if isinstance(result, list) and isinstance(result[0], ChatGeneration):
-            text = result[0].text
+            binary_score = result.get("binary_score", "")
         else:
-            text = result
-        binary_score = text.lower().strip()
-        binary_score = (
-            "yes"
-            if "yes" in binary_score
-            else "no" if "no" in binary_score else ""  # noqa: E501
-        )
-        return {"binary_score": binary_score}
+            if isinstance(result, list) and isinstance(
+                result[0], ChatGeneration
+            ):  # noqa: E501
+                text = result[0].text
+            else:
+                text = str(result)
+
+            text = text.lower()
+            binary_score = "yes" if "yes" in text else "no"
+
+        # Ensure binary_score is always 'yes' or 'no'
+        if binary_score.lower() not in ["yes", "no"]:
+            binary_score = "no"
+
+        return {
+            "binary_score": binary_score,
+        }
