@@ -1,6 +1,6 @@
 from langchain_core.prompts import ChatPromptTemplate
 from ..domain.models import (
-    ComparisonInput,
+    KnowledgeInput,
     GradeDocumentsWithReasoning,
     GradeDocumentsWithoutReasoning,
 )
@@ -36,15 +36,15 @@ class DocumentGrader:
 
     def grade_document(
         self,
-        document: Union[str, ComparisonInput],
-        question: Union[str, ComparisonInput],
+        document: Union[str, KnowledgeInput],
+        question: Union[str, KnowledgeInput],
     ):
-        if isinstance(document, ComparisonInput):
+        if isinstance(document, KnowledgeInput):
             document_content = document.get_content()
         else:
             document_content = document
 
-        if isinstance(question, ComparisonInput):
+        if isinstance(question, KnowledgeInput):
             question_content = question.get_content()
         else:
             question_content = question

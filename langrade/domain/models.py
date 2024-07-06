@@ -11,13 +11,13 @@ from typing import Optional
 from langchain.schema import ChatGeneration
 
 
-class ComparisonInput(ABC):
+class KnowledgeInput(ABC):
     @abstractmethod
     def get_content(self) -> str:
         pass
 
 
-class TextInput(ComparisonInput):
+class TextInput(KnowledgeInput):
     def __init__(self, text: str):
         self.text = text
 
@@ -25,7 +25,7 @@ class TextInput(ComparisonInput):
         return self.text
 
 
-class DocumentInput(ComparisonInput):
+class DocumentInput(KnowledgeInput):
     def __init__(self, document: dict):
         self.document = document
 
@@ -33,7 +33,7 @@ class DocumentInput(ComparisonInput):
         return self.document.get("content", "")
 
 
-class URLInput(ComparisonInput):
+class URLInput(KnowledgeInput):
     def __init__(self, url: str):
         self.url = url
 
