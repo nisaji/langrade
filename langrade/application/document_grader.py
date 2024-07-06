@@ -3,7 +3,7 @@ from ..domain.models import (
     ComparisonInput,
     GradeDocumentsWithReasoning,
     GradeDocumentsWithoutReasoning,
-)  # noqa: E501
+)
 from langrade.constants import SYSTEM_PROMPT
 from typing import Union
 from langrade.infrastructure.llm.base import LLMEngine
@@ -49,7 +49,7 @@ class DocumentGrader:
         else:
             question_content = question
 
-        result = self.structured_llm.invoke(
+        result = self.structured_llm(
             {"document": document_content, "question": question_content}
         )
 

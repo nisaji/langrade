@@ -75,6 +75,8 @@ class GradeDocumentsWithReasoning(BaseModel, BaseLLMOutputParser):
             if "yes" in binary_score
             else "no" if "no" in binary_score else ""  # noqa: E501
         )
+        if binary_score not in ["yes", "no"]:
+            binary_score = "no"
         return {
             "reasoning": reasoning,
             "binary_score": binary_score,
@@ -82,6 +84,7 @@ class GradeDocumentsWithReasoning(BaseModel, BaseLLMOutputParser):
 
 
 class GradeDocumentsWithoutReasoning(BaseModel, BaseLLMOutputParser):
+    binary_score: Optional[str] = Field()
     binary_score: Optional[str] = Field(
         default=None, description=BINARY_SCORE_DESCRIPTION
     )
@@ -96,10 +99,15 @@ class GradeDocumentsWithoutReasoning(BaseModel, BaseLLMOutputParser):
             text = result[0].text
         else:
             text = result
-        binary_score = text.lower().strip()
+        parts = text.lower().split("binary score:")
+        reasoning = parts[0].strip() if len(parts) > 1 else ""
+        binary_score = parts[-1].strip() if parts else ""
         binary_score = (
             "yes"
             if "yes" in binary_score
             else "no" if "no" in binary_score else ""  # noqa: E501
         )
-        return {"binary_score": binary_score}
+        return {
+            "reasoning": reasoning,
+            "binary_score": binary_score,
+        }
