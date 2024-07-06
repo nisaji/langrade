@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Union, Optional
 from langchain_core.pydantic_v1 import BaseModel, Field
 from langrade.constants import (
     GRADE_REASONING_DESCRIPTION,
@@ -6,8 +6,7 @@ from langrade.constants import (
 )
 from abc import ABC, abstractmethod
 from langchain_community.document_loaders import WebBaseLoader
-from langchain.schema import BaseLLMOutputParser
-from typing import Optional
+from langchain.schema import BaseLLMOutputParser, Generation
 from langchain.schema import ChatGeneration
 
 
@@ -57,15 +56,14 @@ class GradeDocumentsWithReasoning(BaseModel, BaseLLMOutputParser):
         default=None, description=BINARY_SCORE_DESCRIPTION
     )
 
-    @classmethod
     def parse_result(
-        cls, result: Union[str, List[ChatGeneration], Dict[str, Any]]
+        self, result: Union[str, List[Generation]], **kwargs: Any
     ) -> Dict[str, Any]:
-        if isinstance(result, dict):
-            return result
-
-        if isinstance(result, list) and isinstance(result[0], ChatGeneration):
-            text = result[0].text
+        if isinstance(result, list):
+            if isinstance(result[0], ChatGeneration):
+                text = result[0].text
+            else:
+                text = str(result[0].text)
         else:
             text = str(result)
 
@@ -94,26 +92,19 @@ class GradeDocumentsWithoutReasoning(BaseModel, BaseLLMOutputParser):
         default=None, description=BINARY_SCORE_DESCRIPTION
     )
 
-    @classmethod
     def parse_result(
-        cls, result: Union[str, List[ChatGeneration], Dict[str, Any]]
+        self, result: Union[str, List[Generation]], **kwargs: Any
     ) -> Dict[str, Any]:
-        if isinstance(result, dict):
-            binary_score = result.get("binary_score", "")
-        else:
-            if isinstance(result, list) and isinstance(
-                result[0], ChatGeneration
-            ):  # noqa: E501
+        if isinstance(result, list):
+            if isinstance(result[0], ChatGeneration):
                 text = result[0].text
             else:
-                text = str(result)
+                text = str(result[0].text)
+        else:
+            text = str(result)
 
-            text = text.lower()
-            binary_score = "yes" if "yes" in text else "no"
-
-        # Ensure binary_score is always 'yes' or 'no'
-        if binary_score.lower() not in ["yes", "no"]:
-            binary_score = "no"
+        text = text.lower()
+        binary_score = "yes" if "yes" in text else "no"
 
         return {
             "binary_score": binary_score,
