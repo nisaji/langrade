@@ -25,6 +25,8 @@ ruff = "^0.5.0"
 mypy = "^1.10.1"
 isort = "^5.13.2"
 setuptools = "^70.2.0"
+pytest = "^6.2"
+pytest-cov = "^2.12"
 types-setuptools = "^70.2.0.20240704"
 
 [build-system]
@@ -45,3 +47,6 @@ ignore_missing_imports = true
 [[tool.mypy.overrides]]
 module = ["docx.*", "openpyxl.*"]
 ignore_missing_imports = true
+
+[tool.poetry.scripts]
+test = "tests.run_tests:main"
