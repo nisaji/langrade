@@ -27,7 +27,13 @@ print(f"Relevance: {result.binary_score}")
 print(f"Reasoning: {result.reasoning}")
 ```
 
-For more detailed usage instructions, please refer to the documentation.
+## Running Tests
+
+To run all tests:
+
+```
+poetry run test
+```
 
 ## Contributing
 
