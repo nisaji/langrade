@@ -19,13 +19,13 @@ from langrade import document_grader, create_retriever
 
 # Initialize the grader
 api_key = "your_openai_api_key_here"
-grader = document_grader(api_key, reasoning=True)
+grader = document_grader(api_key)
 
 # Prepare the retriever
 urls = [
-    "https://example.com/article1",
-    "https://example.com/article2",
-    "https://example.com/article3",
+    "https://lilianweng.github.io/posts/2023-06-23-agent/",
+    "https://lilianweng.github.io/posts/2023-03-15-prompt-engineering/",
+    "https://lilianweng.github.io/posts/2023-10-25-adv-attack-llm/",
 ]
 retriever = create_retriever(urls, api_key)
 
