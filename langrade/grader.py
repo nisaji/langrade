@@ -16,6 +16,7 @@ class GradeDocuments(BaseModel):
 
 class DocumentGrader:
     def __init__(self, api_key: str, model: str = DEFAULT_MODEL):
+        # type: ignore[arg-type]
         self.llm = ChatOpenAI(api_key=api_key, model=model)
         self.prompt = self._create_prompt()
 

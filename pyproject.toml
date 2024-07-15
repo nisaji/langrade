@@ -51,4 +51,4 @@ module = ["docx.*", "openpyxl.*"]
 ignore_missing_imports = true
 
 [tool.poetry.scripts]
-test = "tests.run_tests:main"
+test = "scripts.run_tests:main"
