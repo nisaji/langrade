@@ -36,5 +36,6 @@ setup(
         "chromadb",
         "tiktoken",
         "python-dotenv",
+        "beautifulsoup4",
     ],
 )
