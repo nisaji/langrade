@@ -6,7 +6,7 @@ authors = ["nisaji <nisaji27@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.9"  # Updated to require Python 3.9+
 langchain = "^0.2.6"
 langchain-community = "^0.2.6"
 langchain-openai = "^0.1.14"
@@ -20,8 +20,7 @@ beautifulsoup4 = "^4.12.3"
 numpy = "^1.22.5"
 chromadb = "^0.5.3,<0.6.0"
 
-google-generativeai = "^0.7.1"
-anthropic = "0.2.8"
+
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.5.0"
 mypy = "^1.10.1"
@@ -37,7 +36,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.ruff]
 line-length = 88
-select = ["E", "F", "W", "C", "N"]
+select = ["E", "F", "W", "C", "N", "S"]  # Added "S" for security checks
 ignore = ["E501", "W503"]
 
 [tool.isort]
@@ -52,3 +51,7 @@ ignore_missing_imports = true
 
 [tool.poetry.scripts]
 test = "scripts.run_tests:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --cov=langrade"
