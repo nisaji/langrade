@@ -1,6 +1,6 @@
 # langrade
 
-Langrade is a Python library for grading and retrieving documents based on their relevance to a given question.
+langrade is a Python library for grading and retrieving documents based on their relevance to a given question.
 
 ## Installation
 
