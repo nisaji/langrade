@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "langrade"
-version = "0.1.1"
+version = "0.1.2"
 description = "A library for grading document relevance using LLMs"
 authors = ["nisaji <nisaji27@gmail.com>"]
 license = "MIT"

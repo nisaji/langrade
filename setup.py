@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="langrade",
-    version="0.1.1",
+    version="0.1.2",
     author="Your Name",
     author_email="your.email@example.com",
     description="A library for grading and retrieving documents based on relevance",  # noqa: E501
