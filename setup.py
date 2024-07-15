@@ -8,7 +8,7 @@ setup(
     version="0.1.0",
     author="Your Name",
     author_email="your.email@example.com",
-    description="A library for grading and retrieving documents based on relevance",
+    description="A library for grading and retrieving documents based on relevance",  # noqa: E501
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/yourusername/langrade",
@@ -21,6 +21,10 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+    ],
+    tests_require=[
+        "pytest",
+        "python-dotenv",
     ],
     python_requires=">=3.8",
     install_requires=[
