@@ -1,19 +1,27 @@
 import unittest
 from unittest.mock import patch, MagicMock
 from langrade import create_retriever
-from .conftest import get_api_key
+from conftest import get_api_key
 
 
 class TestRetriever(unittest.TestCase):
     def setUp(self):
         self.api_key = get_api_key()
-        self.urls = ["https://example.com/article1", "https://example.com/article2"]
+        self.urls = [
+            "https://lilianweng.github.io/posts/2023-06-23-agent/",
+            "https://lilianweng.github.io/posts/2023-03-15-prompt-engineering/",  # noqa: E501
+            "https://lilianweng.github.io/posts/2023-10-25-adv-attack-llm/",
+        ]
 
     @patch("langrade.retriever.WebBaseLoader")
     @patch("langrade.retriever.Chroma")
     def test_create_retriever(self, mock_chroma, mock_web_loader):
-        mock_web_loader.return_value.load.return_value = [MagicMock()]
-        mock_chroma.from_documents.return_value.as_retriever.return_value = MagicMock()
+        mock_doc = MagicMock()
+        mock_doc.page_content = "This is a test document"
+        mock_web_loader.return_value.load.return_value = [mock_doc]
+        mock_chroma.from_documents.return_value.as_retriever.return_value = (
+            MagicMock()
+        )  # noqa: E501
 
         retriever = create_retriever(self.urls, self.api_key)
 
@@ -23,8 +31,12 @@ class TestRetriever(unittest.TestCase):
 
     @patch("langrade.retriever.WebBaseLoader")
     @patch("langrade.retriever.Chroma")
-    def test_retriever_get_relevant_documents(self, mock_chroma, mock_web_loader):
-        mock_web_loader.return_value.load.return_value = [MagicMock()]
+    def test_retriever_get_relevant_documents(
+        self, mock_chroma, mock_web_loader
+    ):  # noqa: E501
+        mock_doc = MagicMock()
+        mock_doc.page_content = "This is a test document"
+        mock_web_loader.return_value.load.return_value = [mock_doc]
         mock_retriever = MagicMock()
         mock_chroma.from_documents.return_value.as_retriever.return_value = (
             mock_retriever
@@ -40,7 +52,3 @@ class TestRetriever(unittest.TestCase):
 
         self.assertEqual(len(docs), 1)
         self.assertIn("AI", docs[0].page_content)
-
-
-if __name__ == "__main__":
-    unittest.main()
