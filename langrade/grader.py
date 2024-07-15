@@ -7,6 +7,7 @@ from .constants import (
     REASONING_DESCRIPTION,
     BINARY_SCORE_DESCRIPTION,
 )
+import html
 
 
 class GradeDocuments(BaseModel):
@@ -16,7 +17,6 @@ class GradeDocuments(BaseModel):
 
 class DocumentGrader:
     def __init__(self, api_key: str, model: str = DEFAULT_MODEL):
-        # type: ignore[arg-type]
         self.llm = ChatOpenAI(api_key=api_key, model=model)
         self.prompt = self._create_prompt()
 
@@ -32,9 +32,15 @@ class DocumentGrader:
         )
 
     def grade_document(self, document: str, question: str):
+        # Sanitize inputs
+        safe_document = html.escape(document)
+        safe_question = html.escape(question)
+
         structured_llm = self.llm.with_structured_output(GradeDocuments)
         chain = self.prompt | structured_llm
-        result = chain.invoke({"document": document, "question": question})
+        result = chain.invoke(
+            {"document": safe_document, "question": safe_question}
+        )  # noqa: E501
         return result
 
 

@@ -49,7 +49,7 @@ Optional reasoning for grading decisions
 
 ## Requirements
 
-Python 3.8+
+Python 3.9+
 
 OpenAI API key
 
@@ -62,6 +62,20 @@ To run all tests:
 poetry run test
 
 ```
+
+## Security
+
+- Always use environment variables for sensitive information like API keys.
+- Never commit `.env` files to version control.
+- Regularly update dependencies to their latest secure versions.
+- Use HTTPS for all external communications.
+- Sanitize all user inputs before processing.
+
+For local development:
+
+1. Copy `.env.example` to `.env`
+2. Fill in your actual API keys and other sensitive information in `.env`
+3. Ensure `.env` is in your `.gitignore` file
 
 ## Contributing
 
