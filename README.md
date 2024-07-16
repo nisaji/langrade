@@ -2,6 +2,10 @@
 
 langrade is a Python library for grading and retrieving documents based on their relevance to a given question. It supports multiple LLM providers including OpenAI, Anthropic (Claude), and Google (Gemini).
 
+## Documentation
+
+For detailed documentation, please visit our [Langrade Documentation](https://nisaji.github.io/langrade/).
+
 ## Installation
 
 You can install Langrade using pip:
