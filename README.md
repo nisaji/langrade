@@ -39,6 +39,47 @@ print(f"Relevance: {result.binary_score}")
 print(f"Reasoning: {result.reasoning}")
 ```
 
+## Output Examples
+
+```
+# AI related urls
+urls = [
+    "https://lilianweng.github.io/posts/2023-06-23-agent/",
+    "https://lilianweng.github.io/posts/2023-03-15-prompt-engineering/",
+    "https://lilianweng.github.io/posts/2023-10-25-adv-attack-llm/",
+]
+# question
+question = "What is AI?"
+
+# Relevance: yes
+# Reasoning: The document discusses adversarial generation in AI and human involvement in tricking models, which is related to AI concepts.
+
+# question
+question = "What is Bread?"
+
+# Relevance: no
+# Reasoning: The retrieved document discusses adversarial generation and the use of word importance in model predictions, which is not related to the user question about bread.
+
+# Wikipedia(JA) for Bread
+urls = [
+    "https://ja.wikipedia.org/wiki/%E3%83%91%E3%83%B3",
+]
+
+# question
+question = "What is Bread?"
+
+# Relevance: yes
+# Reasoning: The retrieved document discusses the origins of bread 14,400 years ago in Jordan, which directly relates to the user question about bread.
+
+# question
+question = "What is AI?"
+
+# Relevance: no
+# Reasoning: The retrieved document is about the African continent and does not contain any information related to AI, which is the user's question.
+
+# The above reasoning is because of this article includes information which related to African Continent.
+```
+
 ## Features
 
 Document retrieval from web URLs
