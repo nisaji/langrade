@@ -21,19 +21,18 @@ Here's a quick example of how to use Langrade:
 ```python
 from langrade import document_grader, create_retriever
 
-# Initialize the grader
-api_key = "your_openai_api_key_here"
-grader = document_grader(api_key)
+provider = "openai"
+api_key = "your_api_key_here"
+model = "gpt-3.5-turbo-0125"
 
-# Prepare the retriever
+grader = document_grader(provider, api_key, model)
+
 urls = [
-    "https://lilianweng.github.io/posts/2023-06-23-agent/",
-    "https://lilianweng.github.io/posts/2023-03-15-prompt-engineering/",
-    "https://lilianweng.github.io/posts/2023-10-25-adv-attack-llm/",
+    "https://example.com/article1",
+    "https://example.com/article2",
 ]
 retriever = create_retriever(urls, api_key)
 
-# Retrieve and grade a document
 question = "What is AI?"
 docs = retriever.get_relevant_documents(question)
 doc_txt = docs[0].page_content
