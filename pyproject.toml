@@ -19,7 +19,8 @@ python-docx = "^1.1.2"
 beautifulsoup4 = "^4.12.3"
 numpy = "^1.22.5"
 chromadb = "^0.5.3,<0.6.0"
-
+langchain-anthropic = "^0.1.20"
+langchain-google-genai = "^1.0.7"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.5.0"
