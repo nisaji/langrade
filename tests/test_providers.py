@@ -16,6 +16,8 @@ class TestProviders(unittest.TestCase):
         self.gemini_model = os.getenv("GEMINI_MODEL")
         self.anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
         self.claude_model = os.getenv("CLAUDE_MODEL")
+        self.groq_api_key = os.getenv("GROQ_API_KEY")
+        self.groq_model = os.getenv("GROQ_MODEL")
 
         self.test_document = "Artificial Intelligence (AI) is the simulation of human intelligence processes by machines, especially computer systems."  # noqa: E501
         self.test_question = "What is AI?"
@@ -27,6 +29,15 @@ class TestProviders(unittest.TestCase):
         result = provider.grade_document(
             self.test_document, self.test_question
         )  # noqa: E501
+        self.assertIsInstance(result, GradeDocuments)
+        self.assertIn(result.binary_score.lower(), ["yes", "no"])
+        self.assertIsNotNone(result.reasoning)
+
+    def test_groq_provider(self):
+        provider = LLMProviderFactory.create_provider(
+            "groq", self.groq_api_key, self.groq_model
+        )
+        result = provider.grade_document(self.test_document, self.test_question)
         self.assertIsInstance(result, GradeDocuments)
         self.assertIn(result.binary_score.lower(), ["yes", "no"])
         self.assertIsNotNone(result.reasoning)

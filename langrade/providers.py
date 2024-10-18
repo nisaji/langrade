@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
-from langchain_core.pydantic_v1 import BaseModel, Field, SecretStr
+from pydantic import BaseModel, Field
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
+from langchain_groq import ChatGroq
 from langchain_anthropic import ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
 from .constants import (
@@ -55,9 +56,12 @@ class AnthropicProvider(LLMProvider):
 
 class GoogleProvider(LLMProvider):
     def _create_llm(self, api_key: str, model: str):
-        return ChatGoogleGenerativeAI(
-            google_api_key=SecretStr(api_key), model=model
-        )  # noqa: E501
+        return ChatGoogleGenerativeAI(google_api_key=api_key, model=model)  # noqa: E501
+
+
+class GroqProvider(LLMProvider):
+    def _create_llm(self, api_key: str, model: str):
+        return ChatGroq(groq_api_key=api_key, model_name=model)  # noqa: E501
 
 
 class LLMProviderFactory:
@@ -71,5 +75,7 @@ class LLMProviderFactory:
             return AnthropicProvider(api_key, model)
         elif provider == "google":
             return GoogleProvider(api_key, model)
+        elif provider == "groq":
+            return GroqProvider(api_key, model)
         else:
             raise ValueError(f"Unsupported provider: {provider}")
