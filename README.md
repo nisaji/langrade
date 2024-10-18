@@ -43,7 +43,7 @@ print(f"Reasoning: {result.reasoning}")
 
 - Document retrieval from web URLs
 - Document grading based on relevance to a question
-- Support for multiple LLM providers (OpenAI, Anthropic, Google)
+- Support for multiple LLM providers (OpenAI, Anthropic, Google, Groq)
 
 ## Requirements
 
