@@ -30,13 +30,13 @@ print(f"Reasoning: {result.reasoning}")
 
 ## Table of Contents
 
-- Installation
-- Usage
-- API Reference
-- Configuration
-- Providers
-- Advanced Usage
-- Troubleshooting
-- Contributing
-- Changelog
-- FAQ
+- [Installation](https://nisaji.github.io/langrade/installation)
+- [Usage](https://nisaji.github.io/langrade/usage)
+- [API Reference](https://nisaji.github.io/langrade/api)
+- [Configuration](https://nisaji.github.io/langrade/configuration)
+- [Providers](https://nisaji.github.io/langrade/providers)
+- [Advanced Usage](https://nisaji.github.io/langrade/advanced_usage)
+- [Troubleshooting](https://nisaji.github.io/langrade/troubleshooting)
+- [Contributing](https://nisaji.github.io/langrade/contributing)
+- [Changelog](https://nisaji.github.io/langrade/changelog)
+- [FAQ](https://nisaji.github.io/langrade/faq)
