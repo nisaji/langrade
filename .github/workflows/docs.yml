@@ -1,23 +1,50 @@
 name: Publish docs via GitHub Pages
 on:
-  push:
+  pull_request:
+    types: [closed]
     branches:
       - main
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   build:
-    name: Deploy docs
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout main
         uses: actions/checkout@v3
 
-      - name: Deploy docs
-        uses: mhausenblas/mkdocs-deploy-gh-pages@master
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install dependencies
+        run: |
+          pip install mkdocs
+          pip install mkdocs-material
+
+      - name: Build site
+        run: mkdocs build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "site"
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Update repository description
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CONFIG_FILE: mkdocs.yml
-          EXTRA_PACKAGES: build-base
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh repo edit --homepage "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"

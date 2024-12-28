@@ -1,14 +1,6 @@
 site_name: Langrade Documentation
 theme: readthedocs
+site_url: https://nisaji.github.io/langrade/
 
 nav:
   - Home: index.md
-  - Installation: installation.md
-  - Usage: usage.md
-  - API Reference: api.md
-  - Configuration: configuration.md
-  - Advanced Usage: advanced_usage.md
-  - Troubleshooting: troubleshooting.md
-  - Contributing: contributing.md
-  - Changelog: changelog.md
-  - FAQ: faq.md
