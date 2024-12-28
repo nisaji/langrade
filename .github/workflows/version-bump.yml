@@ -1,0 +1,40 @@
+name: Version Bump
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+jobs:
+  version-bump:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+
+      - name: Configure Git
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Bump version
+        run: |
+          current_version=$(poetry version -s)
+          poetry version patch
+          new_version=$(poetry version -s)
+          git add pyproject.toml
+          git commit -m "Bump version from ${current_version} to ${new_version}"
+          git tag -a "v${new_version}" -m "Release v${new_version}"
+          git push
+          git push --tags
