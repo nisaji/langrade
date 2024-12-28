@@ -41,7 +41,6 @@ jobs:
           current_version=$(poetry version -s)
           poetry version patch
           new_version=$(poetry version -s)
-          sed -i "s/version=\"${current_version}\"/version=\"${new_version}\"/" setup.py
 
       - name: Validate versions
         run: python scripts/validate_versions.py ${{ steps.current_version.outputs.version }}
@@ -49,8 +48,8 @@ jobs:
       - name: Commit and tag
         run: |
           new_version=$(poetry version -s)
-          git add pyproject.toml setup.py
-          git commit -m "Bump version from ${current_version} to ${new_version}"
+          git add pyproject.toml
+          git commit -m "Bump version to ${new_version}"
           git tag -a "v${new_version}" -m "Release v${new_version}"
           git push
           git push --tags

@@ -30,8 +30,13 @@ jobs:
       - name: Install validation dependencies
         run: pip install tomli
 
-      - name: Validate versions
-        run: python scripts/validate_versions.py
+      - name: Check version exists on PyPI
+        run: |
+          VERSION=$(poetry version -s)
+          if pip install langrade==$VERSION 2>/dev/null; then
+            echo "Version $VERSION already exists on PyPI"
+            exit 1
+          fi
 
       - name: Build and publish
         run: poetry publish --build
