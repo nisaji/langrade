@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 import vertexai
 from vertexai.language_models import TextEmbeddingModel
 from google.oauth2 import service_account
@@ -7,7 +7,7 @@ import json
 
 class VertexAIEmbeddings:
     def __init__(
-        self, credentials: str | dict, model_name: str = "multilingual-e5-large"
+        self, credentials: Union[str, dict], model_name: str = "multilingual-e5-large"
     ):
         if isinstance(credentials, str):
             try:

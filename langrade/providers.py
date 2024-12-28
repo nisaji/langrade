@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import json
+from typing import Union
 from langchain_core.pydantic_v1 import BaseModel, Field
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
@@ -63,7 +64,7 @@ class AnthropicProvider(LLMProvider):
 
 
 class VertexAIProvider(LLMProvider):
-    def _create_llm(self, credentials: str | dict, model: str):
+    def _create_llm(self, credentials: Union[str, dict], model: str):
         if isinstance(credentials, str):
             try:
                 with open(credentials) as f:

@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 import numpy as np
 from langchain.schema import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -32,7 +32,11 @@ class Retriever:
         return [self.documents[i] for i in top_k_idx]
 
 
-def create_retriever(urls: list[str], credentials: str | dict):
+def create_retriever(
+    urls: list[str],
+    credentials: Union[str, dict],
+    embedding_model: str = "multilingual-e5-large",
+):
     docs = [WebBaseLoader(url).load() for url in urls]
     docs_list = [item for sublist in docs for item in sublist]
 
