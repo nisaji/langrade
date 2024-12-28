@@ -1,10 +1,42 @@
+from typing import List, Union
+import numpy as np
+from langchain.schema import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import WebBaseLoader
-from langchain_community.vectorstores import Chroma
-from langchain_openai import OpenAIEmbeddings
+from .embeddings import VertexAIEmbeddings
 
 
-def create_retriever(urls: list[str], api_key: str):
+class Retriever:
+    def __init__(self, documents: List[Document], embeddings: VertexAIEmbeddings):
+        self.documents = documents
+        self.embeddings = embeddings
+        self.doc_embeddings = None
+        self._compute_embeddings()
+
+    def _compute_embeddings(self):
+        texts = [doc.page_content for doc in self.documents]
+        self.doc_embeddings = self.embeddings.embed_documents(texts)
+
+    def _cosine_similarity(self, a, b):
+        return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+
+    def get_relevant_documents(self, query: str, k: int = 4) -> List[Document]:
+        query_embedding = self.embeddings.embed_query(query)
+
+        similarities = [
+            self._cosine_similarity(query_embedding, doc_emb)
+            for doc_emb in self.doc_embeddings
+        ]
+
+        top_k_idx = np.argsort(similarities)[-k:][::-1]
+        return [self.documents[i] for i in top_k_idx]
+
+
+def create_retriever(
+    urls: list[str],
+    credentials: Union[str, dict],
+    embedding_model: str = "multilingual-e5-large",
+):
     docs = [WebBaseLoader(url).load() for url in urls]
     docs_list = [item for sublist in docs for item in sublist]
 
@@ -13,9 +45,5 @@ def create_retriever(urls: list[str], api_key: str):
     )
     doc_splits = text_splitter.split_documents(docs_list)
 
-    vectorstore = Chroma.from_documents(
-        documents=doc_splits,
-        collection_name="rag-chroma",
-        embedding=OpenAIEmbeddings(api_key=api_key),
-    )
-    return vectorstore.as_retriever()
+    embeddings = VertexAIEmbeddings(credentials)
+    return Retriever(doc_splits, embeddings)
