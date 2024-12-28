@@ -7,7 +7,7 @@ setup(
     name="langrade",
     version="0.1.2",
     author="Your Name",
-    author_email="your.email@example.com",
+    author_email="nisaji27@gmail.com",
     description="A library for grading and retrieving documents based on relevance",  # noqa: E501
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -33,5 +33,6 @@ setup(
         "tiktoken>=0.5.2,<0.6.0",
         "python-dotenv>=1.0.0,<2.0.0",
         "beautifulsoup4>=4.12.0,<5.0.0",
+        "vertexai==1.75.0",
     ],
 )

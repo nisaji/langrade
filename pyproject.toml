@@ -23,13 +23,15 @@ langchain-anthropic = "^0.1.20"
 langchain-google-genai = "^1.0.7"
 
 mkdocs = "^1.6.0"
+vertexai = "^1.71.1"
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.5.0"
 mypy = "^1.10.1"
 isort = "^5.13.2"
 setuptools = "^70.2.0"
-pytest = "^6.2"
-pytest-cov = "^2.12"
+pytest = "^7.0.0"
+pytest-asyncio = "^0.21.0"
+pytest-cov = "^4.1.0"
 types-setuptools = "^70.2.0.20240704"
 
 [build-system]
