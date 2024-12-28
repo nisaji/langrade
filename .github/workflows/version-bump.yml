@@ -20,8 +20,16 @@ jobs:
         with:
           python-version: "3.9"
 
-      - name: Install Poetry
+      - name: Install Poetry and dependencies
         uses: snok/install-poetry@v1
+
+      - name: Install validation dependencies
+        run: pip install tomli
+
+      - name: Get current version
+        id: current_version
+        run: |
+          echo "version=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
 
       - name: Configure Git
         run: |
@@ -33,7 +41,15 @@ jobs:
           current_version=$(poetry version -s)
           poetry version patch
           new_version=$(poetry version -s)
-          git add pyproject.toml
+          sed -i "s/version=\"${current_version}\"/version=\"${new_version}\"/" setup.py
+
+      - name: Validate versions
+        run: python scripts/validate_versions.py ${{ steps.current_version.outputs.version }}
+
+      - name: Commit and tag
+        run: |
+          new_version=$(poetry version -s)
+          git add pyproject.toml setup.py
           git commit -m "Bump version from ${current_version} to ${new_version}"
           git tag -a "v${new_version}" -m "Release v${new_version}"
           git push
